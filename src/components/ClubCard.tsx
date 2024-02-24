@@ -5,6 +5,7 @@ import ClubDeleteButton from "./ClubDeleteButton";
 import ClubEditButton from "./ClubEditButton";
 import { hasPermissions } from "@/lib/utils/permissions";
 import { Permission } from "@/types/permission";
+import { LinkButton } from "socis-components";
 
 /**
  * Props for the club card component.
@@ -42,7 +43,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
       )}
     >
       {/**
-       * EVENT NAME
+       * CLUB NAME
        *
        * The name of the club.
        */}
@@ -51,7 +52,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
       </h1>
 
       {/**
-       * EVENT DESCRIPTION
+       * CLUB DESCRIPTION
        *
        * The description of the club.
        */}
@@ -61,6 +62,26 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
          */}
         {props.club.description}
       </p>
+
+      {/**
+       * CLUB Socials
+       */}
+      <div className="mt-4 flex flex-wrap gap-2">
+        {/**
+         * CLUB LINKTREE
+         *
+         * The linktree of the club.
+         */}
+        {props.club.linktree && (
+          <LinkButton
+            href={props.club.linktree}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Linktree
+          </LinkButton>
+        )}
+      </div>
 
       {/**
        * Edit and Delete buttons for the club.

@@ -235,6 +235,22 @@ function Components(): JSX.Element {
         />
 
         {/**
+         * CLUB Linktree
+         *
+         * The user can set the linktree of the club. This will be displayed on the club page.
+         */}
+        <label className="mb-2 text-white">Club Linktree</label>
+        <input
+          className="rounded-lg border border-primary bg-secondary px-4 py-3 text-base font-thin tracking-wider text-white duration-300 ease-in-out focus:outline-none disabled:opacity-50"
+          maxLength={config.club.max.linktree}
+          minLength={config.club.min.linktree}
+          placeholder="Linktree"
+          type="text"
+          value={club.linktree}
+          onChange={(e) => setClub({ ...club, linktree: e.target.value })}
+        />
+
+        {/**
          * TODO: Add club image (banner) upload
          */}
 

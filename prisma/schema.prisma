@@ -42,8 +42,7 @@ model Club {
   name        String   @default("New Club")
   description String   @default("New Club Description")
   image       String   @default("/images/default-banner-socis_club_plain")
-  events      String[] // Event IDs
-  members     String[] // Member IDs
+  linktree    String
 }
 
 // npx prisma migrate dev --name init

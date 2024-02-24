@@ -9,7 +9,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "SOCIS | Create Event",
+  title: "SOCIS | Create Club",
   description:
     "The Society of Computing and Information Science (SOCIS) is a student organization at the University of Guelph.",
 };

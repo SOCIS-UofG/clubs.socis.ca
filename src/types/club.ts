@@ -3,6 +3,5 @@ export interface Club {
   name: string;
   description: string;
   image: string;
-  events: string[];
-  members: string[];
+  linktree: string;
 }

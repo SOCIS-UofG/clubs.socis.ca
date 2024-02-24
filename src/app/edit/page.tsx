@@ -54,7 +54,7 @@ export default function UpdateClubsPage(): JSX.Element {
 }
 
 /**
- * The main components for the update events page. These are to be wrapped in a
+ * The main components for the update clubs page. These are to be wrapped in a
  * session provider for next auth.
  *
  * @returns JSX.Element
@@ -73,7 +73,7 @@ function Components(): JSX.Element {
    * Get the club id from the url.
    */
   const path = usePathname();
-  const eventId = path.split("/")[2];
+  const clubId = path.split("/")[2];
 
   /**
    * Once the page loads, we want to fetch the club data so that we can
@@ -84,7 +84,7 @@ function Components(): JSX.Element {
      * If the club id is invalid or we are already fetching the club data,
      * then don't fetch the club data again.
      */
-    if (!eventId || fetchStatus !== FormStatus.NEED_FETCH) {
+    if (!clubId || fetchStatus !== FormStatus.NEED_FETCH) {
       return;
     }
 
@@ -97,7 +97,7 @@ function Components(): JSX.Element {
     /**
      * Fetch the club data from the database.
      */
-    getClub({ id: eventId })
+    getClub({ id: clubId })
       .then((data) => {
         if (!data.club) {
           setFetchStatus(FormStatus.ERROR);
@@ -129,7 +129,7 @@ function Components(): JSX.Element {
 
     /**
      * If the provideed data for the club being created is invalid, then
-     * return an error message. This is so that empty events are not created.
+     * return an error message. This is so that empty clubs are not created.
      */
     if (!isValidClubData(club)) {
       setEditStatus(FormStatus.EMPTY_FIELDS);
@@ -155,7 +155,7 @@ function Components(): JSX.Element {
   /**
    * If the provided club id (from the url parameters) is invalid, then show an error message.
    */
-  if (!eventId) {
+  if (!clubId) {
     return (
       <MainWrapper>
         <h1 className="text-center text-3xl font-bold text-white lg:text-5xl">
@@ -294,6 +294,22 @@ function Components(): JSX.Element {
           placeholder="Description"
           value={club.description}
           onChange={(e) => setClub({ ...club, description: e.target.value })}
+        />
+
+        {/**
+         * CLUB Linktree
+         *
+         * The user can set the linktree of the club. This will be displayed on the club page.
+         */}
+        <label className="mb-2 text-white">Club Linktree</label>
+        <input
+          className="rounded-lg border border-primary bg-secondary px-4 py-3 text-base font-thin tracking-wider text-white duration-300 ease-in-out focus:outline-none disabled:opacity-50"
+          maxLength={config.club.max.linktree}
+          minLength={config.club.min.linktree}
+          placeholder="Linktree"
+          type="text"
+          value={club.linktree}
+          onChange={(e) => setClub({ ...club, linktree: e.target.value })}
         />
 
         <Button type="submit">Update Club</Button>
