@@ -99,9 +99,13 @@ function Components(): JSX.Element {
       <MainWrapper className="fade-in-delay items-start justify-start gap-20 px-20 pb-20 pt-40">
         <div className="flex flex-col items-start justify-start gap-3">
           <h1 className="text-center text-4xl font-extrabold uppercase text-white lg:text-5xl">
-            Clubs
+            Umbrella Clubs
           </h1>
-          <p className="text-center text-sm font-thin text-white">Clubs para</p>
+          <p className="text-center text-sm font-thin text-white">
+            Explore all of the clubs that SOCIS supports at The University of
+            Guelph. If you are interested in starting a new club, please contact
+            the SOCIS team.
+          </p>
         </div>
 
         {/**
