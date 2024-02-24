@@ -20,14 +20,16 @@ export const clubsRouter = {
         accessToken: z.string(),
         club: z.object({
           id: z.string().optional(),
-          name: z
-            .string()
-            .max(config.club.max.name)
-            .min(config.club.min.name),
+          name: z.string().max(config.club.max.name).min(config.club.min.name),
           description: z
             .string()
             .max(config.club.max.description)
             .min(config.club.min.description),
+          linktree: z
+            .string()
+            .max(config.club.max.linktree)
+            .min(config.club.min.linktree)
+            .optional(),
           image: z.string().optional(),
         }),
       }),
@@ -49,6 +51,7 @@ export const clubsRouter = {
         name: club.name,
         description: club.description,
         image: club.image || config.club.default.image,
+        linktree: club.linktree || config.club.default.linktree,
       } as Club);
 
       if (!newClub) {
@@ -103,10 +106,7 @@ export const clubsRouter = {
         accessToken: z.string(),
         club: z.object({
           id: z.string(),
-          name: z
-            .string()
-            .max(config.club.max.name)
-            .min(config.club.min.name),
+          name: z.string().max(config.club.max.name).min(config.club.min.name),
           description: z
             .string()
             .max(config.club.max.description)
