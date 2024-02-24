@@ -110,7 +110,7 @@ function Components(): JSX.Element {
 
           <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
             {CAN_CREATE_CLUB && (
-              <LinkButton href="/clubs/create" className="w-40">
+              <LinkButton href="/create" className="w-fit">
                 Create Club
               </LinkButton>
             )}
