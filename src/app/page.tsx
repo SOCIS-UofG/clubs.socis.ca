@@ -77,17 +77,18 @@ function Components(): JSX.Element {
    */
   if (fetchStatus === "error") {
     return (
-      <ErrorMessage>
-        An error occurred while fetching the clubs. Please try again later.
-      </ErrorMessage>
+      <MainWrapper>
+        <ErrorMessage>
+          An error occurred while fetching the clubs. Please try again later.
+        </ErrorMessage>
+      </MainWrapper>
     );
   }
 
   /**
-   * If the user is authenticated and can create clubs, then they can create an club.
+   * Store if the user is authenticated and can create clubs.
    */
-  const CAN_CREATE_CLUB =
-    session?.user && session.user.permissions.includes(Permission.ADMIN);
+  const CAN_CREATE_CLUB = session?.user.permissions.includes(Permission.ADMIN);
 
   /**
    * Return the main components
@@ -106,16 +107,15 @@ function Components(): JSX.Element {
             Guelph. If you are interested in starting a new club, please contact
             the SOCIS team.
           </p>
-        </div>
 
-        {/**
-         * If the user is authenticated and can create clubs, then they can create an club.
-         */}
-        {CAN_CREATE_CLUB && (
-          <LinkButton href="/clubs/create" className="w-40">
-            Create Club
-          </LinkButton>
-        )}
+          <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
+            {CAN_CREATE_CLUB && (
+              <LinkButton href="/clubs/create" className="w-40">
+                Create Club
+              </LinkButton>
+            )}
+          </div>
+        </div>
 
         {/**
          * Render all of the club cards
