@@ -96,12 +96,12 @@ function Components(): JSX.Element {
     <>
       <CustomCursor />
 
-      <MainWrapper className="fade-in-delay items-start justify-start gap-20 px-20 pb-20 pt-40">
+      <MainWrapper className="fade-in items-start justify-start gap-20 px-12 pb-20 pt-36 lg:px-20 lg:pt-44">
         <div className="flex flex-col items-start justify-start gap-3">
-          <h1 className="text-center text-4xl font-extrabold uppercase text-white lg:text-5xl">
+          <h1 className="text-left text-4xl font-extrabold uppercase text-white lg:text-5xl">
             Umbrella Clubs
           </h1>
-          <p className="text-center text-sm font-thin text-white">
+          <p className="max-w-2xl text-left text-sm font-thin text-white">
             Explore all of the clubs that SOCIS supports at The University of
             Guelph. If you are interested in starting a new club, please contact
             the SOCIS team.
