@@ -97,7 +97,7 @@ function Components(): JSX.Element {
     <>
       <CustomCursor />
 
-      <MainWrapper className="fade-in items-start justify-start gap-20 px-12 pb-20 pt-36 lg:px-20">
+      <MainWrapper className="fade-in items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
         <div className="flex flex-col items-start justify-start gap-3">
           <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
             Umbrella Clubs
@@ -108,13 +108,13 @@ function Components(): JSX.Element {
             the SOCIS team.
           </p>
 
-          <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
-            {CAN_CREATE_CLUB && (
+          {CAN_CREATE_CLUB && (
+            <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
               <LinkButton href="/create" className="w-fit">
                 Create Club
               </LinkButton>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/**
