@@ -178,9 +178,9 @@ function Components(): JSX.Element {
       setCreationStatus(FormStatus.SUCCESS);
 
       /**
-       * Redirect the user to the next-steps page.
+       * Redirect the user to the home page.
        */
-      router.push("/next-steps");
+      router.push("/");
     } else {
       /**
        * If the club was not successfully created, then set the status to error.
@@ -275,7 +275,7 @@ function Components(): JSX.Element {
       {/**
        * If the club was successfully created, then display a success message.
        *
-       * This will appear before the user is redirected to the /next-steps page.
+       * This will appear before the user is redirected to the home page.
        */}
       {creationStatus === FormStatus.SUCCESS && (
         <SuccessMessage>
