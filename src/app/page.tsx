@@ -24,6 +24,7 @@ export default function ClubsPage() {
   return (
     <>
       <Navbar />
+      <CustomCursor />
       {/**<Background text={"CLUBS"} animated={false} className="-z-10" /> */}
 
       <SessionProvider>
@@ -94,38 +95,34 @@ function Components(): JSX.Element {
    * Return the main components
    */
   return (
-    <>
-      <CustomCursor />
+    <MainWrapper className="fade-in items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
+      <div className="flex flex-col items-start justify-start gap-3">
+        <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
+          Umbrella Clubs
+        </h1>
+        <p className="max-w-2xl text-left text-sm font-thin text-white">
+          Explore all of the clubs that SOCIS supports at The University of
+          Guelph. If you are interested in starting a new club, please contact
+          the executive team.
+        </p>
 
-      <MainWrapper className="fade-in items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
-        <div className="flex flex-col items-start justify-start gap-3">
-          <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
-            Umbrella Clubs
-          </h1>
-          <p className="max-w-2xl text-left text-sm font-thin text-white">
-            Explore all of the clubs that SOCIS supports at The University of
-            Guelph. If you are interested in starting a new club, please contact
-            the executive team.
-          </p>
+        {CAN_CREATE_CLUB && (
+          <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
+            <LinkButton href="/create" className="w-fit">
+              Create Club
+            </LinkButton>
+          </div>
+        )}
+      </div>
 
-          {CAN_CREATE_CLUB && (
-            <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
-              <LinkButton href="/create" className="w-fit">
-                Create Club
-              </LinkButton>
-            </div>
-          )}
-        </div>
-
-        {/**
-         * Render all of the club cards
-         */}
-        <div className="flex flex-wrap justify-center gap-10">
-          {clubs.map((club) => (
-            <ClubCard key={club.id} club={club} />
-          ))}
-        </div>
-      </MainWrapper>
-    </>
+      {/**
+       * Render all of the club cards
+       */}
+      <div className="flex flex-wrap justify-center gap-10">
+        {clubs.map((club) => (
+          <ClubCard key={club.id} club={club} />
+        ))}
+      </div>
+    </MainWrapper>
   );
 }
