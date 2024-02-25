@@ -105,7 +105,7 @@ function Components(): JSX.Element {
           <p className="max-w-2xl text-left text-sm font-thin text-white">
             Explore all of the clubs that SOCIS supports at The University of
             Guelph. If you are interested in starting a new club, please contact
-            the SOCIS team.
+            the executive team.
           </p>
 
           {CAN_CREATE_CLUB && (
