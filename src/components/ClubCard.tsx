@@ -6,6 +6,7 @@ import ClubEditButton from "./ClubEditButton";
 import { hasPermissions } from "@/lib/utils/permissions";
 import { Permission } from "@/types/permission";
 import { LinkButton } from "socis-components";
+import Image from "next/image";
 
 /**
  * Props for the club card component.
@@ -38,25 +39,34 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
   return (
     <div
       className={cn(
-        "btn relative flex h-fit w-96 flex-col items-start justify-start rounded-lg border border-primary bg-secondary p-6 duration-300 ease-in-out",
+        "btn relative flex h-fit w-96 flex-col items-start justify-start gap-3.5 rounded-lg border border-primary bg-secondary p-6 duration-300 ease-in-out",
         props.className,
       )}
     >
       {/**
-       * CLUB NAME
+       * CLUB NAME AND LOGO
        *
        * The name of the club.
        */}
-      <h1 className="text-3xl font-extrabold uppercase tracking-wider text-white">
-        {props.club.name}
-      </h1>
+      <div className="flex flex-row items-center justify-start gap-3.5">
+        <Image
+          src="/images/logo.png"
+          alt="..."
+          width={50}
+          height={50}
+          className="rounded-full"
+        />
+        <h1 className="text-3xl font-extrabold uppercase tracking-wider text-white">
+          {props.club.name}
+        </h1>
+      </div>
 
       {/**
        * CLUB DESCRIPTION
        *
        * The description of the club.
        */}
-      <p className="mt-1 line-clamp-3 h-12 w-full overflow-hidden text-sm font-thin text-white">
+      <p className="line-clamp-3 h-12 w-full overflow-hidden text-sm font-thin text-white">
         {/**
          * Show an ellipsis if the description is too long.
          */}
@@ -66,7 +76,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
       {/**
        * CLUB Socials
        */}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {/**
          * CLUB LINKTREE
          *
@@ -74,6 +84,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
          */}
         {props.club.linktree && (
           <LinkButton
+            className="px-6 py-2"
             href={props.club.linktree}
             target="_blank"
             rel="noreferrer"

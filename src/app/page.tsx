@@ -4,6 +4,7 @@ import ClubCard from "@/components/ClubCard";
 import { useEffect, useState } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { type Club } from "@/types/club";
+import { trpc } from "@/lib/trpc/client";
 import {
   ErrorMessage,
   MainWrapper,
@@ -11,9 +12,8 @@ import {
   CustomCursor,
   Navbar,
   LinkButton,
+  NavbarTabs,
 } from "socis-components";
-import { trpc } from "@/lib/trpc/client";
-import { Permission } from "@/types/permission";
 
 /**
  * Wraps the main components in a session provider for next auth.
@@ -23,7 +23,7 @@ import { Permission } from "@/types/permission";
 export default function ClubsPage() {
   return (
     <>
-      <Navbar />
+      <Navbar underlined={NavbarTabs.CLUBS} />
       <CustomCursor />
       {/**<Background text={"CLUBS"} animated={false} className="-z-10" /> */}
 
@@ -89,14 +89,14 @@ function Components(): JSX.Element {
   /**
    * Store if the user is authenticated and can create clubs.
    */
-  const CAN_CREATE_CLUB = session?.user.permissions.includes(Permission.ADMIN);
+  const CAN_CREATE_CLUB = true;
 
   /**
    * Return the main components
    */
   return (
     <MainWrapper className="fade-in items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
-      <div className="flex flex-col items-start justify-start gap-3">
+      <div className="flex w-full flex-col items-start justify-start gap-3">
         <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
           Umbrella Clubs
         </h1>
@@ -106,13 +106,23 @@ function Components(): JSX.Element {
           the executive team.
         </p>
 
-        {CAN_CREATE_CLUB && (
-          <div className="flex w-full flex-col items-start justify-start gap-4 md:flex-row">
-            <LinkButton href="/create" className="w-fit">
+        <div className="flex w-full flex-row items-center justify-start gap-3">
+          <LinkButton
+            href="https://initiatives.socis.ca"
+            className="w-auto max-w-96 text-center text-xs sm:text-base"
+          >
+            See our initiatives
+          </LinkButton>
+
+          {CAN_CREATE_CLUB && (
+            <LinkButton
+              href="/create"
+              className="w-auto max-w-96 text-center text-xs sm:text-base"
+            >
               Create Club
             </LinkButton>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/**
@@ -120,7 +130,7 @@ function Components(): JSX.Element {
        */}
       <div className="flex flex-wrap justify-center gap-10">
         {clubs.map((club) => (
-          <ClubCard key={club.id} club={club} />
+          <ClubCard user={session?.user} key={club.id} club={club} />
         ))}
       </div>
     </MainWrapper>
