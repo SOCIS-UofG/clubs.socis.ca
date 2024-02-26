@@ -14,6 +14,8 @@ import {
   LinkButton,
   NavbarTabs,
 } from "socis-components";
+import { hasPermissions } from "@/lib/utils/permissions";
+import { Permission } from "@/types/permission";
 
 /**
  * Wraps the main components in a session provider for next auth.
@@ -89,7 +91,8 @@ function Components(): JSX.Element {
   /**
    * Store if the user is authenticated and can create clubs.
    */
-  const CAN_CREATE_CLUB = true;
+  const CAN_CREATE_CLUB =
+    session?.user && hasPermissions(session.user, [Permission.ADMIN]);
 
   /**
    * Return the main components
