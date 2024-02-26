@@ -11,15 +11,13 @@ export const clubsRouter = {
   /**
    * Add a club to the database
    *
-   * @param input - The input object
-   * @param input.club - The club to add
+   * @returns The new club
    */
   createClub: publicProcedure
     .input(
       z.object({
         accessToken: z.string(),
         club: z.object({
-          id: z.string().optional(),
           name: z.string().max(config.club.max.name).min(config.club.min.name),
           description: z
             .string()
@@ -45,9 +43,8 @@ export const clubsRouter = {
       }
 
       const club = input.club as Club;
-      const generatedId = club.id || uuidv4();
       const newClub = await Prisma.createClub({
-        id: generatedId,
+        id: uuidv4(),
         name: club.name,
         description: club.description,
         image: club.image || config.club.default.image,
@@ -64,8 +61,6 @@ export const clubsRouter = {
   /**
    * Delete a club from the database
    *
-   * @param input - The input object
-   * @param input.id - The id of the club to delete
    * @returns The deleted club
    */
   deleteClub: publicProcedure
@@ -96,8 +91,6 @@ export const clubsRouter = {
   /**
    * Update a club in the database
    *
-   * @param input - The input object
-   * @param input.club - The club to update
    * @returns The updated club
    */
   updateClub: publicProcedure
@@ -153,8 +146,6 @@ export const clubsRouter = {
   /**
    * Get a club by its id
    *
-   * @param input - The input object
-   * @param input.id - The id of the club to get
    * @returns The club
    */
   getClub: publicProcedure
