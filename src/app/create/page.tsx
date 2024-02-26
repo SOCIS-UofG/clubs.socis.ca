@@ -163,6 +163,8 @@ function Components(): JSX.Element {
      * return an error message. This is so that empty clubs are not created.
      */
     if (!isValidClubData(club)) {
+      setCreationStatus(FormStatus.EMPTY_FIELDS);
+
       return setCreationStatus(FormStatus.EMPTY_FIELDS); // setCreationStatus: void
     }
 
