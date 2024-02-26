@@ -165,7 +165,7 @@ function Components(): JSX.Element {
     if (!isValidClubData(club)) {
       setCreationStatus(FormStatus.EMPTY_FIELDS);
 
-      return setCreationStatus(FormStatus.EMPTY_FIELDS); // setCreationStatus: void
+      return;
     }
 
     /**
