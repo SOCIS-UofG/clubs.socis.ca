@@ -20,7 +20,6 @@ import { type Club } from "@/types/club";
 import { isValidClubData } from "@/lib/utils/clubs";
 import config from "@/lib/config/club.config";
 import { trpc } from "@/lib/trpc/client";
-import { v4 as uuidv4 } from "uuid";
 
 /**
  * The status of the form.
@@ -63,10 +62,7 @@ function Components(): JSX.Element {
   const router = useRouter();
 
   const [creationStatus, setCreationStatus] = useState(FormStatus.IDLE);
-  const [club, setClub] = useState<Club>({
-    id: uuidv4(),
-    ...config.club.default,
-  });
+  const [club, setClub] = useState<Club>(config.club.default as Club);
 
   /**
    * If the club is being created, the user is not authenticated, or the
