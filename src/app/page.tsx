@@ -131,7 +131,7 @@ function Components(): JSX.Element {
       {/**
        * Render all of the club cards
        */}
-      <div className="flex flex-wrap justify-center gap-10">
+      <div className="flex w-full flex-wrap items-start justify-start gap-10">
         {clubs.map((club) => (
           <ClubCard user={session?.user} key={club.id} club={club} />
         ))}
