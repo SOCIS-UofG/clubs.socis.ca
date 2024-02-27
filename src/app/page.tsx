@@ -109,7 +109,7 @@ function Components(): JSX.Element {
           the executive team.
         </p>
 
-        <div className="flex w-full flex-row items-center justify-start gap-3">
+        <div className="flex w-full flex-row items-start justify-start gap-3">
           <LinkButton
             href="https://initiatives.socis.ca"
             className="w-auto max-w-96 text-center text-xs sm:text-base"
