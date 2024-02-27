@@ -89,7 +89,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            Linktree
+            Learn more
           </LinkButton>
         )}
       </div>
