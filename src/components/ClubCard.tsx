@@ -39,7 +39,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
   return (
     <div
       className={cn(
-        "btn relative flex h-fit w-full flex-col items-start justify-start gap-3.5 rounded-lg border border-primary bg-secondary p-6 duration-300 ease-in-out sm:w-96",
+        "btn relative flex h-fit w-full max-w-[50rem] flex-col items-start justify-start gap-3.5 rounded-lg border border-primary bg-secondary p-6 duration-300 ease-in-out sm:w-96",
         props.className,
       )}
     >
@@ -89,7 +89,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            Linktree
+            Learn more
           </LinkButton>
         )}
       </div>
