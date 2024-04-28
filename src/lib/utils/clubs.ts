@@ -3,7 +3,7 @@ import config from "@/lib/config/club.config";
 
 /**
  * Check if a club is valid
- * 
+ *
  * @param club The club to check
  * @returns Whether or not the club is valid
  */

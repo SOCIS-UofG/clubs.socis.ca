@@ -1,21 +1,19 @@
 "use client";
 
-import ClubCard from "@/components/ClubCard";
+import ClubCard from "@/components/ui/ClubCard";
 import { useEffect, useState } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { type Club } from "@/types/club";
 import { trpc } from "@/lib/trpc/client";
-import {
-  ErrorMessage,
-  MainWrapper,
-  LoadingSpinnerCenter,
-  CustomCursor,
-  Navbar,
-  LinkButton,
-  NavbarTabs,
-} from "socis-components";
 import { hasPermissions } from "@/lib/utils/permissions";
-import { Permission } from "@/types/permission";
+import { Permission } from "@/types/global/permission";
+import { Button, NextUIProvider, Spinner } from "@nextui-org/react";
+import Navbar from "@/components/ui/global/Navbar";
+import CustomCursor from "@/components/ui/global/CustomCursor";
+import Background from "@/components/ui/global/Background";
+import MainWrapper from "@/components/ui/global/MainWrapper";
+import Link from "next/link";
+import { type Status } from "@/types/global/status";
 
 /**
  * Wraps the main components in a session provider for next auth.
@@ -24,15 +22,15 @@ import { Permission } from "@/types/permission";
  */
 export default function ClubsPage() {
   return (
-    <>
-      <Navbar underlined={NavbarTabs.CLUBS} />
+    <NextUIProvider>
+      <Navbar />
       <CustomCursor />
-      {/**<Background text={"CLUBS"} animated={false} className="-z-10" /> */}
+      <Background text={"CLUBS"} animated={false} />
 
       <SessionProvider>
         <Components />
       </SessionProvider>
-    </>
+    </NextUIProvider>
   );
 }
 
@@ -44,10 +42,10 @@ export default function ClubsPage() {
  */
 function Components(): JSX.Element {
   const { data: session, status: sessionStatus } = useSession();
-  const { mutateAsync: getClubs, status: fetchStatus } =
-    trpc.getAllClubs.useMutation();
+  const { mutateAsync: getClubs } = trpc.getAllClubs.useMutation();
 
   const [clubs, setClubs] = useState<Club[]>([]);
+  const [status, setStatus] = useState<Status>("idle");
 
   /**
    * We need to access the clubs from the database.
@@ -57,33 +55,32 @@ function Components(): JSX.Element {
      * If the fetch status is not idle, then we don't need to
      * fetch the clubs again.
      */
-    if (fetchStatus !== "idle") {
+    if (status !== "idle") {
       return;
     }
+
+    setStatus("loading");
+
     /**
      * Fetch the clubs from the database.
      */
-    getClubs().then((res) => setClubs(res.clubs));
+    getClubs()
+      .then((res) => {
+        setClubs(res.clubs);
+        setStatus("success");
+      })
+      .catch(() => {
+        setStatus("error");
+      });
   }, [session]);
 
   /**
    * If the fetch is still in progress, display a loading spinner.
    */
-  if (sessionStatus === "loading" || fetchStatus === "loading") {
-    return <LoadingSpinnerCenter />;
-  }
-
-  /**
-   * If the fetch failed, display an error message.
-   *
-   * TODO: Add a refresh button.
-   */
-  if (fetchStatus === "error") {
+  if (sessionStatus === "loading" || status === "loading") {
     return (
-      <MainWrapper>
-        <ErrorMessage>
-          An error occurred while fetching the clubs. Please try again later.
-        </ErrorMessage>
+      <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
+        <Spinner size="lg" color="primary" />
       </MainWrapper>
     );
   }
@@ -98,7 +95,7 @@ function Components(): JSX.Element {
    * Return the main components
    */
   return (
-    <MainWrapper className="fade-in items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
+    <MainWrapper className="fade-in relative z-40 flex min-h-screen w-screen flex-col items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
       <div className="flex w-full flex-col items-start justify-start gap-3">
         <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
           Umbrella Clubs
@@ -109,23 +106,28 @@ function Components(): JSX.Element {
           the executive team.
         </p>
 
-        <div className="flex w-full flex-row items-start justify-start gap-3">
-          <LinkButton
+        <div className="flex w-full flex-wrap items-start justify-start gap-3">
+          <Button
+            as={Link}
+            color="primary"
             href="https://initiatives.socis.ca"
-            className="w-auto max-w-96 text-center text-xs sm:text-base"
+            className="btn"
           >
             See our initiatives
-          </LinkButton>
+          </Button>
 
           {CAN_CREATE_CLUB && (
-            <LinkButton
-              href="/create"
-              className="w-auto max-w-96 text-center text-xs sm:text-base"
-            >
+            <Button as={Link} color="primary" href="/create" className="btn">
               Create Club
-            </LinkButton>
+            </Button>
           )}
         </div>
+
+        {status === "error" && (
+          <p className="text-red-500">
+            Failed to fetch clubs. Please try again.
+          </p>
+        )}
       </div>
 
       {/**
@@ -133,7 +135,7 @@ function Components(): JSX.Element {
        */}
       <div className="flex w-full flex-wrap items-start justify-start gap-10">
         {clubs.map((club) => (
-          <ClubCard user={session?.user} key={club.id} club={club} />
+          <ClubCard user={session?.user} key={club.id} club={club as Club} />
         ))}
       </div>
     </MainWrapper>
