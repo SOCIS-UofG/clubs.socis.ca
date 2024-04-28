@@ -90,6 +90,21 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
           </p>
 
           {/**
+           * CLUB LINKTREE
+           *
+           * The linktree of the club.
+           */}
+          <Button
+            as={Link}
+            color="primary"
+            size="sm"
+            variant="solid"
+            href={props.club.linktree}
+          >
+            Visit our Linktree
+          </Button>
+
+          {/**
            * Edit and Delete buttons for the club.
            */}
           {props.user && CAN_MANAGE_CLUBS && (
