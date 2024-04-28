@@ -323,7 +323,7 @@ function Components(): JSX.Element {
           />
         </div>
 
-        <div className="flex w-full flex-wrap items-center justify-center gap-2">
+        <div className="flex w-full flex-col items-center justify-center gap-2 sm:flex-row">
           <Button className="btn w-full" color="primary" type="submit">
             Update Club
           </Button>
