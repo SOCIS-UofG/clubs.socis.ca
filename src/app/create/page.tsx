@@ -4,33 +4,24 @@ import { type FormEvent, useState } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { type Session } from "next-auth";
 import { hasPermissions } from "@/lib/utils/permissions";
-import { Permission } from "@/types/permission";
-import {
-  ErrorMessage,
-  SuccessMessage,
-  MainWrapper,
-  LoadingSpinnerCenter,
-  CustomCursor,
-  Navbar,
-  LinkButton,
-  Button,
-} from "socis-components";
+import { Permission } from "@/types/global/permission";
 import { useRouter } from "next/navigation";
 import { type Club } from "@/types/club";
 import { isValidClubData } from "@/lib/utils/clubs";
 import config from "@/lib/config/club.config";
 import { trpc } from "@/lib/trpc/client";
-
-/**
- * The status of the form.
- */
-enum FormStatus {
-  IDLE,
-  LOADING,
-  SUCCESS,
-  ERROR,
-  EMPTY_FIELDS,
-}
+import { type FormStatus } from "@/types/global/status";
+import Navbar from "@/components/ui/global/Navbar";
+import CustomCursor from "@/components/ui/global/CustomCursor";
+import MainWrapper from "@/components/ui/global/MainWrapper";
+import {
+  Spinner,
+  Button,
+  Input,
+  Textarea,
+  NextUIProvider,
+} from "@nextui-org/react";
+import Link from "next/link";
 
 /**
  * Wraps the main components in a session provider for next auth.
@@ -39,14 +30,14 @@ enum FormStatus {
  */
 export default function ClubCreationPage(): JSX.Element {
   return (
-    <>
+    <NextUIProvider>
       <Navbar />
       <CustomCursor />
 
       <SessionProvider>
         <Components />
       </SessionProvider>
-    </>
+    </NextUIProvider>
   );
 }
 
@@ -61,7 +52,7 @@ function Components(): JSX.Element {
   const { mutateAsync: createClub } = trpc.createClub.useMutation();
   const router = useRouter();
 
-  const [creationStatus, setCreationStatus] = useState(FormStatus.IDLE);
+  const [creationStatus, setCreationStatus] = useState<FormStatus>("idle");
   const [club, setClub] = useState<Club>(config.club.default as Club);
 
   /**
@@ -69,12 +60,12 @@ function Components(): JSX.Element {
    * default club hasn't been generated (undefined), then return a loading
    * screen.
    */
-  if (
-    sessionStatus === "loading" ||
-    creationStatus === FormStatus.LOADING ||
-    !club
-  ) {
-    return <LoadingSpinnerCenter />;
+  if (sessionStatus === "loading" || creationStatus === "loading" || !club) {
+    return (
+      <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
+        <Spinner size="lg" color="primary" />
+      </MainWrapper>
+    );
   }
 
   /**
@@ -84,7 +75,7 @@ function Components(): JSX.Element {
    */
   if (sessionStatus === "unauthenticated" || !session) {
     return (
-      <MainWrapper>
+      <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
         <h1 className="text-center text-3xl font-bold text-white lg:text-5xl">
           Invalid Session
         </h1>
@@ -93,12 +84,14 @@ function Components(): JSX.Element {
           <p className="text-center text-sm font-light text-white lg:text-base">
             Please sign in to proceed.
           </p>
-          <a
+          <Button
+            className="btn"
+            as={Link}
+            color="primary"
             href="https://auth.socis.ca/signin"
-            className="rounded-lg border border-primary px-10 py-3 text-center font-thin text-white hover:bg-emerald-900/50"
           >
             Sign in
-          </a>
+          </Button>
         </div>
       </MainWrapper>
     );
@@ -111,7 +104,7 @@ function Components(): JSX.Element {
    */
   if (!hasPermissions(session.user, [Permission.ADMIN])) {
     return (
-      <MainWrapper>
+      <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
         <h1 className="text-center text-3xl font-bold text-white lg:text-5xl">
           Invalid Permissions
         </h1>
@@ -120,12 +113,9 @@ function Components(): JSX.Element {
           <p className="text-center text-sm font-light text-white lg:text-base">
             You do not have the permissions to manage clubs.
           </p>
-          <a
-            href="https://auth.socis.ca/signin"
-            className="rounded-lg border border-primary px-10 py-3 text-center font-thin text-white hover:bg-emerald-900/50"
-          >
-            Switch accounts
-          </a>
+          <Button as={Link} href="/" color="default" size="sm">
+            Go back
+          </Button>
         </div>
       </MainWrapper>
     );
@@ -152,14 +142,14 @@ function Components(): JSX.Element {
     /**
      * Set the status to loading so that the user knows that the club is being created.
      */
-    setCreationStatus(FormStatus.LOADING);
+    setCreationStatus("loading");
 
     /**
      * If the provideed data for the club being created is invalid, then
      * return an error message. This is so that empty clubs are not created.
      */
     if (!isValidClubData(club)) {
-      setCreationStatus(FormStatus.EMPTY_FIELDS);
+      setCreationStatus("empty_fields");
 
       return;
     }
@@ -167,37 +157,31 @@ function Components(): JSX.Element {
     /**
      * Create the club using the API.
      */
-    const res = await createClub({ accessToken: session.user.secret, club });
+    await createClub({
+      accessToken: session.user.secret,
+      club,
+    })
+      .then(() => {
+        setCreationStatus("success");
 
-    /**
-     * If the club was successfully created, then set the status to success.
-     */
-    if (res.success) {
-      setCreationStatus(FormStatus.SUCCESS);
-
-      /**
-       * Redirect the user to the home page.
-       */
-      router.push("/");
-    } else {
-      /**
-       * If the club was not successfully created, then set the status to error.
-       */
-      setCreationStatus(FormStatus.ERROR);
-    }
+        router.push("/");
+      })
+      .catch(() => {
+        setCreationStatus("error");
+      });
   }
 
   /**
    * Return the main components for the clubs page.
    */
   return (
-    <MainWrapper className="p-10 pt-20 lg:p-20 lg:pt-44">
+    <MainWrapper className="flex min-h-screen w-screen flex-col items-start justify-start gap-5 p-10 pt-20 lg:p-20 lg:pt-44">
       <form
-        className="flex w-full flex-col"
+        className="flex w-full flex-col items-start justify-start gap-5"
         onSubmit={async (e) => onSubmit(e, club, session)}
       >
         {/** HEADER */}
-        <h1 className="mb-7 text-5xl font-thin uppercase text-white md:text-7xl">
+        <h1 className="mb-2 text-5xl font-normal uppercase text-white md:text-7xl">
           Create Club
         </h1>
 
@@ -207,15 +191,18 @@ function Components(): JSX.Element {
          * The user can add a name to the club.
          * This will be displayed on the club page.
          */}
-        <label className="mb-2 text-white">Club Name</label>
-        <input
-          className="rounded-lg border border-primary bg-secondary px-4 py-3 text-base font-thin tracking-wider text-white duration-300 ease-in-out focus:outline-none"
-          maxLength={config.club.max.name}
-          minLength={config.club.min.name}
-          placeholder="Name"
-          type="text"
-          onChange={(e) => setClub({ ...club, name: e.target.value })}
-        />
+        <div className="flex w-full flex-col items-start justify-start gap-2">
+          <label className="text-white">Club Name</label>
+          <Input
+            className="w-full"
+            maxLength={config.club.max.name}
+            minLength={config.club.min.name}
+            label="Name"
+            placeholder="Name"
+            type="text"
+            onChange={(e) => setClub({ ...club, name: e.target.value })}
+          />
+        </div>
 
         {/**
          * CLUB DESCRIPTION
@@ -223,30 +210,36 @@ function Components(): JSX.Element {
          * The user can add a description to the club.
          * This will be displayed on the club page.
          */}
-        <label className="mb-2 mt-5 text-white">Club Description</label>
-        <textarea
-          className="rounded-lg border border-primary bg-secondary px-4 py-3 text-base font-thin tracking-wider text-white duration-300 ease-in-out focus:outline-none"
-          maxLength={config.club.max.description}
-          minLength={config.club.min.description}
-          placeholder="Description"
-          onChange={(e) => setClub({ ...club, description: e.target.value })}
-        />
+        <div className="flex w-full flex-col items-start justify-start gap-2">
+          <label className="text-white">Club Description</label>
+          <Textarea
+            className="w-full"
+            maxLength={config.club.max.description}
+            minLength={config.club.min.description}
+            label="Description"
+            placeholder="Description"
+            onChange={(e) => setClub({ ...club, description: e.target.value })}
+          />
+        </div>
 
         {/**
          * CLUB Linktree
          *
          * The user can set the linktree of the club. This will be displayed on the club page.
          */}
-        <label className="mb-2 text-white">Club Linktree</label>
-        <input
-          className="rounded-lg border border-primary bg-secondary px-4 py-3 text-base font-thin tracking-wider text-white duration-300 ease-in-out focus:outline-none disabled:opacity-50"
-          maxLength={config.club.max.linktree}
-          minLength={config.club.min.linktree}
-          placeholder="Linktree"
-          type="text"
-          value={club.linktree}
-          onChange={(e) => setClub({ ...club, linktree: e.target.value })}
-        />
+        <div className="flex w-full flex-col items-start justify-start gap-2">
+          <label className="text-white">Club Linktree</label>
+          <Input
+            className="w-full"
+            maxLength={config.club.max.linktree}
+            minLength={config.club.min.linktree}
+            label="Linktree"
+            placeholder="Linktree"
+            type="text"
+            value={club.linktree}
+            onChange={(e) => setClub({ ...club, linktree: e.target.value })}
+          />
+        </div>
 
         {/**
          * TODO: Add club image (banner) upload
@@ -255,19 +248,21 @@ function Components(): JSX.Element {
         {/**
          * CREATE CLUB
          *
-         * Once the user is finished creating the club, they can submit it.
-         * This will send an http request to the API and create the club.
-         * If the user hasn't filled in all the fields, then the club will not be created
-         * and an error message will be displayed.
+         * The user can create the club using the form.
          */}
-        <Button type="submit">Create Club</Button>
-
-        {/**
-         * If the user doesn't want to create the club, then they can cancel.
-         *
-         * This will just redirect them back to the clubs page.
-         */}
-        <LinkButton href="/">Cancel</LinkButton>
+        <div className="flex w-full flex-wrap items-center justify-center gap-2">
+          <Button className="btn w-full" color="primary" type="submit">
+            Create Club
+          </Button>
+          <Button
+            className="btn w-full lg:w-1/2"
+            as={Link}
+            color="default"
+            href="/"
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
 
       {/**
@@ -275,10 +270,8 @@ function Components(): JSX.Element {
        *
        * This will appear before the user is redirected to the home page.
        */}
-      {creationStatus === FormStatus.SUCCESS && (
-        <SuccessMessage>
-          <p>Club created successfully!</p>
-        </SuccessMessage>
+      {creationStatus === "success" && (
+        <p className="text-primary">Club created successfully.</p>
       )}
 
       {/**
@@ -286,10 +279,8 @@ function Components(): JSX.Element {
        *
        * The user will have the chance to input the data again.
        */}
-      {creationStatus === FormStatus.ERROR && (
-        <ErrorMessage>
-          <p>There was an error creating your club.</p>
-        </ErrorMessage>
+      {creationStatus === "error" && (
+        <p className="text-red-500">Failed to create club.</p>
       )}
 
       {/**
@@ -297,10 +288,10 @@ function Components(): JSX.Element {
        *
        * The user will have the chance to input the data again.
        */}
-      {creationStatus === FormStatus.EMPTY_FIELDS && (
-        <ErrorMessage>
-          <p>Make sure all fields are filled in.</p>
-        </ErrorMessage>
+      {creationStatus === "empty_fields" && (
+        <p className="text-red-500">
+          Failed to create club. Please fill in all fields.
+        </p>
       )}
     </MainWrapper>
   );
