@@ -149,7 +149,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
           </ModalBody>
           <ModalFooter>
             <Button
-              className="btn"
+              className="btn disabled:opacity-50"
               disabled={status === "loading"}
               color="danger"
               onClick={async () => {
@@ -180,7 +180,7 @@ export default function ClubCard(props: ClubCardProps): JSX.Element {
               )}
             </Button>
             <Button
-              className="btn"
+              className="btn disabled:opacity-50"
               color="default"
               onClick={onClose}
               disabled={status === "loading"}
