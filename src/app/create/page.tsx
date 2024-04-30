@@ -80,7 +80,7 @@ function Components(): JSX.Element {
           Invalid Session
         </h1>
 
-        <div className="flex flex-col items-center justify-center gap-5">
+        <div className="flex w-full flex-col items-center justify-center gap-5">
           <p className="text-center text-sm font-light text-white lg:text-base">
             Please sign in to proceed.
           </p>
@@ -109,11 +109,11 @@ function Components(): JSX.Element {
           Invalid Permissions
         </h1>
 
-        <div className="flex flex-col items-center justify-center gap-5">
+        <div className="flex w-full flex-col items-center justify-center gap-5">
           <p className="text-center text-sm font-light text-white lg:text-base">
             You do not have the permissions to manage clubs.
           </p>
-          <Button as={Link} href="/" color="default" size="sm">
+          <Button as={Link} href="/" color="default" size="sm" className="btn">
             Go back
           </Button>
         </div>
