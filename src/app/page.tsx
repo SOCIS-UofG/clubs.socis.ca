@@ -105,17 +105,6 @@ const CAN_CREATE_INITIATIVE = session?.user.permissions.includes(
 );
 
 /**
- * If the fetch is still in progress, display a loading spinner.
- */
-if (sessionStatus === "loading" || status === "loading") {
-  return (
-    <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
-      <Spinner size="lg" color="primary" />
-    </MainWrapper>
-  );
-}
-
-/**
  * Store if the user is authenticated and can create clubs.
  */
 const CAN_CREATE_CLUB =

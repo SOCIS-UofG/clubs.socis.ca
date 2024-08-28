@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { type User } from "next-auth";
 import { type Club } from "@/types/club";
+import { type Initiative } from "@/types/initiative";
 
 export class Prisma extends PrismaClient {
   constructor() {
@@ -267,6 +268,82 @@ export class Prisma extends PrismaClient {
     return await Prisma.update("club", {
       where: {
         id: clubId,
+      },
+      data,
+    });
+  };
+
+    /**
+   * Get all of the initiatives
+   *
+   * @returns The initiatives
+   */
+    public static readonly getAllInitiatives = async (): Promise<
+    Initiative[]
+  > => {
+    return await Prisma.findMany("initiative", {});
+  };
+
+  /**
+   * Get an initiative by its id
+   *
+   * @param initiativeId The initiative id
+   * @returns The initiative
+   */
+  public static readonly getInitiativeById = async (
+    initiativeId: string,
+  ): Promise<Initiative | null> => {
+    return await Prisma.findOne("initiative", {
+      where: {
+        id: initiativeId,
+      },
+    });
+  };
+
+  /**
+   * Delete an initiative by its id
+   *
+   * @param initiativeId The initiative id
+   * @returns The deleted initiative
+   */
+  public static readonly deleteInitiativeById = async (
+    initiativeId: string,
+  ): Promise<Initiative | null> => {
+    return await Prisma.delete("initiative", {
+      where: {
+        id: initiativeId,
+      },
+    });
+  };
+
+  /**
+   * Create an initiative
+   *
+   * @param initiative The initiative to create
+   * @returns The created initiative
+   */
+  public static readonly createInitiative = async (
+    initiative: Initiative,
+  ): Promise<Initiative | null> => {
+    return await Prisma.create("initiative", {
+      data: initiative,
+    });
+  };
+
+  /**
+   * Update an initiative
+   *
+   * @param initiativeId The initiative id
+   * @param data The data to update
+   * @returns The updated initiative
+   */
+  public static readonly updateInitiativeById = async (
+    initiativeId: string,
+    data: Initiative,
+  ): Promise<Initiative | null> => {
+    return await Prisma.update("initiative", {
+      where: {
+        id: initiativeId,
       },
       data,
     });
