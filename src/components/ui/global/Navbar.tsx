@@ -125,17 +125,12 @@ export default function Navbar(): JSX.Element {
         </NavbarItem>
 
         <NavbarItem>
-          <NavbarButton href="https://socis.ca/about">ABOUT US</NavbarButton>
+          <NavbarButton href="https://socis.ca/team">TEAM</NavbarButton>
         </NavbarItem>
 
-        <NavbarItem>
-          <NavbarButton href="https://socis.ca/membership">
-            MEMBERSHIP
-          </NavbarButton>
-        </NavbarItem>
 
         <NavbarItem>
-          <NavbarButton href="https://clubs.socis.ca">CLUBS</NavbarButton>
+          <NavbarButton href="/">CLUBS</NavbarButton>
         </NavbarItem>
 
         <NavbarMenuItem>
@@ -166,23 +161,15 @@ export default function Navbar(): JSX.Element {
         <NavbarMenuItem>
           <Link
             className="text-base hover:underline"
-            href="https://socis.ca/about"
+            href="https://socis.ca/team"
           >
-            About Us
+            Team
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem>
           <Link
             className="text-base hover:underline"
-            href="https://socis.ca/membership"
-          >
-            Membership
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link
-            className="text-base hover:underline"
-            href="https://clubs.socis.ca"
+            href="/"
           >
             Clubs
           </Link>

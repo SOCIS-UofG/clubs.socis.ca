@@ -14,6 +14,8 @@ import Background from "@/components/ui/global/Background";
 import MainWrapper from "@/components/ui/global/MainWrapper";
 import Link from "next/link";
 import { type Status } from "@/types/global/status";
+import { type Initiative } from "@/types/initiative";
+import InitiativeCard from "@/components/ui/InitiativeCard";
 
 /**
  * Wraps the main components in a session provider for next auth.
@@ -43,7 +45,9 @@ export default function ClubsPage() {
 function Components(): JSX.Element {
   const { data: session, status: sessionStatus } = useSession();
   const { mutateAsync: getClubs } = trpc.getAllClubs.useMutation();
+  const { mutateAsync: getInitiatives } = trpc.getAllInitiatives.useMutation();
 
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [status, setStatus] = useState<Status>("idle");
 
@@ -72,72 +76,126 @@ function Components(): JSX.Element {
       .catch(() => {
         setStatus("error");
       });
+    getInitiatives()
+      .then((res) => {
+        setInitiatives(res.initiatives);
+        setStatus("success");
+      })
+      .catch(() => {
+        setStatus("error");
+      });
   }, [session]);
 
-  /**
-   * If the fetch is still in progress, display a loading spinner.
-   */
-  if (sessionStatus === "loading" || status === "loading") {
-    return (
-      <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
-        <Spinner size="lg" color="primary" />
-      </MainWrapper>
-    );
-  }
-
-  /**
-   * Store if the user is authenticated and can create clubs.
-   */
-  const CAN_CREATE_CLUB =
-    session?.user && hasPermissions(session.user, [Permission.ADMIN]);
-
-  /**
-   * Return the main components
-   */
+/**
+* If the fetch is still in progress, display a loading spinner.
+*/
+if (sessionStatus === "loading" || status === "loading") {
   return (
-    <MainWrapper className="fade-in relative z-40 flex min-h-screen w-screen flex-col items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
-      <div className="flex w-full flex-col items-start justify-start gap-3">
-        <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
-          Umbrella Clubs
-        </h1>
-        <p className="max-w-2xl text-left text-sm font-thin text-white">
-          Explore all of the clubs that SOCIS supports at The University of
-          Guelph. If you are interested in starting a new club, please contact
-          the executive team.
-        </p>
+    <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
+      <Spinner size="lg" color="primary" />
+    </MainWrapper>
+  );
+}
 
-        <div className="flex w-full flex-wrap items-start justify-start gap-3">
-          <Button
-            as={Link}
-            color="primary"
-            href="https://initiatives.socis.ca"
-            className="btn"
-          >
-            See our initiatives
+/**
+* Store if the user is authenticated and can create initiatives.
+*/
+const CAN_CREATE_INITIATIVE = session?.user.permissions.includes(
+  Permission.ADMIN,
+);
+
+/**
+ * If the fetch is still in progress, display a loading spinner.
+ */
+if (sessionStatus === "loading" || status === "loading") {
+  return (
+    <MainWrapper className="relative z-40 flex min-h-screen w-screen flex-col items-center justify-center">
+      <Spinner size="lg" color="primary" />
+    </MainWrapper>
+  );
+}
+
+/**
+ * Store if the user is authenticated and can create clubs.
+ */
+const CAN_CREATE_CLUB =
+  session?.user && hasPermissions(session.user, [Permission.ADMIN]);
+
+/**
+ * Return the main components
+ */
+return (
+  <MainWrapper className="fade-in relative z-40 flex min-h-screen w-screen flex-col items-start justify-start gap-12 px-12 pb-20 pt-36 lg:px-20">
+    <div className="flex w-full flex-col items-start justify-start gap-3">
+      <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
+        Umbrella Clubs
+      </h1>
+      <p className="max-w-2xl text-left text-sm font-thin text-white">
+        Explore all of the clubs that SOCIS supports at The University of
+        Guelph. If you are interested in starting a new club, please contact
+        the executive team.
+      </p>
+
+      <div className="flex w-full flex-wrap items-start justify-start gap-3">
+        {CAN_CREATE_CLUB && (
+          <Button as={Link} color="primary" href="/create" className="btn">
+            Create Club
           </Button>
-
-          {CAN_CREATE_CLUB && (
-            <Button as={Link} color="primary" href="/create" className="btn">
-              Create Club
-            </Button>
-          )}
-        </div>
-
-        {status === "error" && (
-          <p className="text-red-500">
-            Failed to fetch clubs. Please try again.
-          </p>
         )}
       </div>
 
-      {/**
+      {status === "error" && (
+        <p className="text-red-500">
+          Failed to fetch clubs. Please try again.
+        </p>
+      )}
+    </div>
+
+    {/**
        * Render all of the club cards
        */}
-      <div className="flex w-full flex-wrap items-start justify-start gap-10">
-        {clubs.map((club) => (
-          <ClubCard user={session?.user} key={club.id} club={club as Club} />
-        ))}
+    <div className="flex w-full flex-wrap items-start justify-start gap-10">
+      {clubs.map((club) => (
+        <ClubCard user={session?.user} key={club.id} club={club as Club} />
+      ))}
+    </div>
+
+    <div className="flex flex-col items-start justify-start gap-3">
+      <h1 className="text-left text-4xl font-extrabold uppercase text-white md:text-7xl lg:text-8xl">
+        SOCIS Initiatives
+      </h1>
+
+      <p className="max-w-2xl text-left text-sm font-thin text-white">
+        Explore all of the initiatives that SOCIS supports! If you are
+        interested in helping out with any of these initiatives, please reach
+        out to a club executive, we&apos;d love to have you on board!
+      </p>
+
+      <div className="flex w-full flex-wrap items-start justify-start gap-3">
+        {CAN_CREATE_INITIATIVE && (
+          <Button as={Link} color="primary" href="/create" className="btn">
+            Create Initiative
+          </Button>
+        )}
       </div>
-    </MainWrapper>
-  );
+    </div>
+
+    {status === "error" && (
+      <p className="text-red-500">Failed to fetch initiatives.</p>
+    )}
+
+    {/**
+       * Render all of the initiative cards
+       */}
+    <div className="flex w-full flex-wrap items-start justify-start gap-10">
+      {initiatives.map((initiative) => (
+        <InitiativeCard
+          user={session?.user}
+          key={initiative.id}
+          initiative={initiative}
+        />
+      ))}
+    </div>
+  </MainWrapper>
+);
 }
